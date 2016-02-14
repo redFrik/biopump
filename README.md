@@ -1,23 +1,26 @@
 # biopump
 
-piece for 3dmin's pushpull instrument
+A piece for 3DMIN's PushPull instrument
 
-## background
+## Background
 
-read more about 3dmin here... <http://3dmin.org>
+This interactive audiovisual composition was commissioned by [3DMIN](http://3dmin.org) and supported by the festival/conference [GLOBALE: Performing Sound, Playing Technology](http://zkm.de/event/2016/02/globale-performing-sound-playing-technology). It was premiered 2016-02-05 in Karlsruhe at the ZKM Kubus.
 
-and more about pushpull here... <http://www.3dmin.org/research/open-development-and-design/pushpull/>
-
-this piece was premiered 2016-02-05 in karlsruhe at the zkm as part of the festival/conference [GLOBALE: Performing Sound, Playing Technology](http://zkm.de/event/2016/02/globale-performing-sound-playing-technology)
+This is a piece for the [PushPull](http://www.3dmin.org/research/open-development-and-design/pushpull/) instrument and works a bit like a game where the performer(s) need to pump up the sound - and keep on pumping for the piece to develop. If played by a single person the performer has to select which sounds to keep breeding. All sounds and graphics are generated in realtime.
 
 ## requirements
 
-* SuperCollider 3.7 (no special extensions)
-* Processing 3.0.2 (with the oscP5 library)
+* OSX laptop (but should also run under Linux/Windows (untested))
+* WiFi router
+* PushPull instrument
+* Stereo sound system (with subbass prefered)
+* Video projection (1080p resolution prefered)
+* [SuperCollider](http://supercollider.github.io) (v3.7 with no special extensions)
+* [Processing](http://processing.org) (v3 with the OscP5 library)
 
 ## installation
 
-* install the oscP5 library for processing
+* Install the OscP5 library for processing. This is best done from inside Processing - use the menu 'Add Tool...' and search for 'oscp5' among the libraries.
 
 ## single player
 
@@ -25,7 +28,7 @@ this piece was premiered 2016-02-05 in karlsruhe at the zkm as part of the festi
 
 ## performing
 
-the prefered video projector resolution is 1080p (1920x1080)
+the prefered video projector resolution is 
 
 ## license
 
