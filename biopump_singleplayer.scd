@@ -1,19 +1,20 @@
-//for zkm, karlsruhe, 5feb2016
+//single player
+//for instructions see github/redFrik/biopump
 
-//turn off f.lux, screensaver, automatic gpu switch, airport
-
+/*
 OSCFunc.trace(true);
 OSCFunc.trace(false);
+*/
 
 (
-//--setup:
+//--setup:  EDIT HERE
 var pushPull= NetAddr("192.168.2.6", 9000);  //pushpull 'gil'
-//var pushPull= NetAddr("127.0.0.1", 9000);  //for testing
 var isLeft= false;
+var strength= 1.0;  //lower to something closer to zero for too-easy-to-pump instruments
+
+//--
 var numChannels= 3;  //should correspond with NUMCHANNELS in processing
 var bufferSize= 735;  //should correspond with BUFFERSIZE in processing (1/60*44100)
-
-//--server:
 s.latency= 0.025;
 s.options.sampleRate= 44100;
 s.waitForBoot{
@@ -37,6 +38,7 @@ s.waitForBoot{
 			processing.sendMsg(\alpha, end);
 		});
 	};
+	var reorder= if(isLeft, {#[1, 2, 3, 0, 4, 5]}, {#[0, 3, 2, 1, 4, 5]});
 	var capCal;  //stores capacitive values for calibration
 	var form, section= 0;
 	var indexTime;  //for measuring how long cap4 been pressed
@@ -73,23 +75,23 @@ s.waitForBoot{
 			(1/60/numChannels).wait;
 		};
 	});
-	imuSyn= {|ampx= 6pi, ampy= 6pi, lagx= 5, hp= 0.15|
+	imuSyn= {|ampx= 0, ampy= 0, lagx= 5, hp= 0.15, strength= 1.0|
 		var x= \x.kr(0!numChannels);
-		var y= \y.kr(0!numChannels);
+		var y= \y.kr(0!numChannels)*strength;
 		var xx= x.lag2(lagx);
 		var yy= (HPF.kr(y, hp, 3).abs.lag2ud(15, 50)-0.02).clip(0, 1);  //was lag2ud(10, 40)
 		Out.kr(~cxBus, xx*ampx.lag(10)*(yy*2).clip(0, 1));
 		Out.kr(~cyBus, yy*ampy.lag(10));
 		Out.kr(~ampBus, (yy*2).tanh);  //amplitudes for all synths - scale here
-	}.play;
+	}.play(args:[\strength, strength]);
 	OSCdef(\imu, {|msg|
 		var accRawVals= msg[4..6];
 		//accRawVals.postln;  //debug
 		accx[index]= accRawVals[0];
 		imuSyn.set(\x, accx, \y, (0!numChannels).put(index, accRawVals[2]-0.9));
-	}, '/imu', p);
+	}, '/imu', pushPull);
 	OSCdef(\caps, {|msg|
-		var str= "", capRawVals;
+		var str= "", capRawVals, i;
 		msg[1].do{|c| str= str++c.asAscii};
 		capRawVals= str.split(Char.space).asInteger;
 		if(isLeft, {
@@ -118,7 +120,7 @@ s.waitForBoot{
 				indexTime= Main.elapsedTime;
 			});
 		});
-	}, '/inputs/serial/1', p);
+	}, '/inputs/serial/1', pushPull);
 	form= {
 		("form section is now:"+section).postln;
 		switch(section,
@@ -128,6 +130,7 @@ s.waitForBoot{
 				processing.sendMsg(\alpha, 50);
 			},
 			1, {
+				imuSyn.set(\ampx, 6pi, \ampy, 6pi);
 				~ch0.release;
 				~ch0= {var a,c,d,f; a=SinOscFB;AllpassN.ar(a.ar(198.5*(a.ar(0.08,0.5).range(0.5, 1.5).round(0.333))+c=(Amplitude.ar(d=InFeedback.ar)<a.ar(f=1/#[9,8.9]*1.1)).lag(f/4)+d,d+f,c),f*3,f*3,20).tanh*0.5*(In.kr(~ampBus, 3)[0])}.play(outbus:~waveBusses[0], fadeTime:10);  //t0270
 				~ch1.release;
@@ -153,17 +156,6 @@ s.waitForBoot{
 				~ch00= {var a,c,d; a=LFSaw;(Pan2.ar(AllpassC.ar(a.ar(1/c=(1..6))>0.95*a.ar((d=a.ar(0.075))>0/3+1*c*99*0.5),c/9,c/9,d*4+1),a.ar(1/c/9*2)).sum.lag*12).softclip*(In.kr(~ampBus, 3)[0])}.play(outbus:~waveBusses[0], fadeTime:20);  //t0245
 				~ch1.release(60);
 				~ch1= {var a,b,c; a=SinOscFB;c=a.ar(#[50,99],0.4);RecordBuf.ar(InFeedback.ar(0,2)+c/3,b=LocalBuf(8e4,2).clear);BufRd.ar(2,b,a.ar(c)*6e4).mean*(In.kr(~ampBus, 3)[1])}.play(outbus:~waveBusses[1], fadeTime: 30);  //t0160
-				/*
-				~ch1= {var a,b; a=LFPulse;LeakDC.ar(
-					LPF.ar(
-					SinOsc.ar(MouseX.kr(40, 60).poll+[0,1],0,MouseY.kr(0, 1))*Splay.ar(a.ar((99*b=#[1,4,5,8])*lag(a.ar(a.ar(4/b)+a.ar(9-b/9)*50))+b)/2)
-					,4000)
-				)+Mix(GrayNoise.ar(a.ar(b,0,0.1))*0.15)*(In.kr(~ampBus, 3)[1])}.play(outbus:~waveBusses[1], fadeTime:10);  //t0234
-				*/
-				/*
-				~ch1.release(10);
-				~ch1= {var a,b,c,z; a=Blip;b=9/(1..9);c=a.ar(b/9,2);z=sum(a.ar(b,303)*a.ar(b/5-4,2.5));{|i|z=z+AllpassC.ar(z,i+1/b/9,i+1/b/9,c,b/9)}!9;Splay.ar(z.sin*0.5).softclip*(In.kr(~ampBus, 3)[1])!2}.play(outbus:~waveBusses[1], fadeTime:10);  //t0267
-				*/
 			},
 			5, {
 				pushPullAlpha.value(5, 3, 100);
@@ -190,23 +182,27 @@ s.waitForBoot{
 )
 
 /*
+//--testing
 s.scope
 s.scope(rate:\control)
+
+~imu.free;  //mute input from pushpull
 ~section.value(1); ~form.value
+~ampBus.setn([0.33, 0.33, 0.33])
+~cyBus.setn([pi, pi, pi])
+~ampBus.setn([0, 0.2, 0])  //one line only
+~cyBus.setn([1, 1, 1]*100)  //very long lines
+
 ~section.value(2); ~form.value
 ~section.value(3); ~form.value
 ~section.value(4); ~form.value
 ~section.value(5); ~form.value
+~section.value(6); ~form.value
 
-~imu.free;
-~ampBus.setn([0.33, 0.33, 0.33])
-
-~ampBus.setn([0, 0.2, 0])
-
-~cyBus.setn([1, 1, 1]*100)
-~index.value(1)
-~imu.set(\x, [0.5, 0.4, 0.3], \y, [0.8, 0.7, 0.6]);
-n= NetAddr("127.0.0.1", 47130);
+~index.value(1)  //currently selected line
+~imu.set(\x, [0.5, 0.4, 0.3], \y, [0.8, 0.7, 0.6]);  //for testing
+~imu.set(\strength, 0.5)  //lower makes it harder to pump
+n= NetAddr("127.0.0.1", 47130);  //processing
 n.sendMsg(\feedback, 0);
 n.sendMsg(\feedback, 1);
 n.sendMsg(\alpha, 10)
