@@ -21,7 +21,7 @@ This is a piece for the [PushPull](http://www.3dmin.org/research/open-developmen
 
 ## Installation
 
-* The Supercollider code is written to work on the default sc3.7 without the need to install any extra classes or plugins.
+* The Supercollider code is written to work on the standard SC3.7 without the need to install any extra classes or plugins.
 * The Processing code needs the OscP5 library. Install it from inside Processing ifself: under menu 'Add Tool...' search for 'oscp5' among the libraries.
 
 ## Startup
@@ -31,7 +31,7 @@ This is a piece for the [PushPull](http://www.3dmin.org/research/open-developmen
 * Connect a video projector and sound to the laptop.
 * Open and run the sketch `biopump_graphics.pde` in Processing. It should display fullscreen black with a few green dots.
 * Start SuperCollider and run the code in either `biopump_singleplayer.scd` or `biopump_multiplayer.scd`.
-* The capacitive sensors are calibrated at startup so do not touch them at the same time as you start the SuperCollider code.
+* The capacitive sensors are calibrated at startup so do not touch them at the same time as you evaluate the SuperCollider code.
 
 ## Single player
 
@@ -51,13 +51,13 @@ This is a piece for the [PushPull](http://www.3dmin.org/research/open-developmen
 ## Multi player
 
 * The players control one channel (line) each.
-* Pump to hear and see sound.
 * Select new sound by holding capacitive sensor 4 for longer than 2 seconds.
+* Pump to hear and see your sound.
 * Tilt the head of the PushPull instrument to move the line left and right.
 
 ## Future ideas
 
-* implement collision detection for lines (in Processing and send back data via osc).
+* Implement collision detection for lines (in Processing and send back data via osc).
 
 ## License
 

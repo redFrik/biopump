@@ -112,9 +112,14 @@ s.waitForBoot{
 						if(Main.elapsedTime-indexTime>2, {  //hold cap4 to go to next section
 							section= section+1;
 							form.value();
+							pushPull.sendMsg('/outputs/rgb/1', 255.dup(24).as(Int8Array));  //all white
+							{
+								pushPull.sendMsg('/outputs/rgb/1', Int8Array.newClear(24));  //all black
+							}.defer(1);
 						});
+					}, {
+						pushPull.sendMsg('/outputs/rgb/1', Int8Array.newClear(24));  //all black
 					});
-					pushPull.sendMsg('/outputs/rgb/1', Int8Array.newClear(24));  //all black
 				});
 				indexLast= i;
 				indexTime= Main.elapsedTime;
@@ -134,9 +139,9 @@ s.waitForBoot{
 				~ch0.release;
 				~ch0= {var a,c,d,f; a=SinOscFB;AllpassN.ar(a.ar(198.5*(a.ar(0.08,0.5).range(0.5, 1.5).round(0.333))+c=(Amplitude.ar(d=InFeedback.ar)<a.ar(f=1/#[9,8.9]*1.1)).lag(f/4)+d,d+f,c),f*3,f*3,20).tanh*0.5*(In.kr(~ampBus, 3)[0])}.play(outbus:~waveBusses[0], fadeTime:10);  //t0270
 				~ch1.release;
-				~ch1= {var a,c,d,f; a=SinOscFB;AllpassN.ar(a.ar(98.5+c=(Amplitude.ar(d=InFeedback.ar)<a.ar(f=1/#[9,8.9])).lag(f/9)+d,d+f,c),f*3,f*3,20).tanh*0.5*(In.kr(~ampBus, 3)[1])}.play(outbus:~waveBusses[1], fadeTime:10);    //t0270
+				~ch1= {var a,c,d,f; a=SinOscFB;AllpassN.ar(a.ar(98.5+c=(Amplitude.ar(d=InFeedback.ar)<a.ar(f=1/#[9,8.9])).lag(f/9)+d,d+f,c),f*3,f*3,20).tanh*0.5*(In.kr(~ampBus, 3)[1])}.play(outbus:~waveBusses[1], fadeTime:10);  //t0270
 				~ch2.release;
-				~ch2= {var a,c,d,f; a=SinOscFB;AllpassN.ar(a.ar(298.5*(a.ar(0.1,0.5).range(0.5, 2).round(0.333))+c=(Amplitude.ar(d=InFeedback.ar)<a.ar(f=1/#[9,8.9]*0.9)).lag(f/9)+d,d+f,c),f*3,f*3,20).tanh*0.5*(In.kr(~ampBus, 3)[2])}.play(outbus:~waveBusses[2], fadeTime:10);    //t0270
+				~ch2= {var a,c,d,f; a=SinOscFB;AllpassN.ar(a.ar(298.5*(a.ar(0.1,0.5).range(0.5, 2).round(0.333))+c=(Amplitude.ar(d=InFeedback.ar)<a.ar(f=1/#[9,8.9]*0.9)).lag(f/9)+d,d+f,c),f*3,f*3,20).tanh*0.5*(In.kr(~ampBus, 3)[2])}.play(outbus:~waveBusses[2], fadeTime:10);  //t0270
 			},
 			2, {
 				pushPullAlpha.value(50, 255, 60);
