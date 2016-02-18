@@ -51,9 +51,14 @@ It was written for the [PushPull](http://www.3dmin.org/research/open-development
 * Pump to hear and see your sound.
 * Tilt the head of the PushPull instrument to move the line left and right.
 
+## Duration
+
+* The piece can last for a few minutes up to around 10 minutes. It is up to the performers to judge.
+
 ## Future ideas
 
 * Implement collision detection for lines (in Processing and send back data via osc).
+* Tune strength using one of the knobs at the instrument base.
 
 ## License
 

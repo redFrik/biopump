@@ -13,17 +13,17 @@ var pushPulls= [
 	//strength: lower to something closer to zero for too-easy-to-pump instruments
 	//isLeft: for left/right handed instruments
 	(
-		addr: NetAddr("192.168.2.1", 9000),  //pushpull 'gil'
+		addr: NetAddr("192.168.2.6", 9000),  //pushpull
 		strength: 1.0,
 		isLeft: false
 	),
 	(
-		addr: NetAddr("192.168.2.2", 9000),  //pushpull '?'
+		addr: NetAddr("192.168.2.4", 9000),  //pushpull
 		strength: 0.5,
 		isLeft: false
 	),
 	(
-		addr: NetAddr("192.168.2.6", 9000),  //pushpull '?'
+		addr: NetAddr("192.168.2.5", 9000),  //pushpull
 		strength: 0.5,
 		isLeft: false
 	)
@@ -36,7 +36,7 @@ s.latency= 0.025;
 s.options.sampleRate= 44100;
 s.waitForBoot{
 	var processing= NetAddr("127.0.0.1", 47130);
-	var accx= 0!numChannels;
+	var accx= 0!numChannels, accy= 0!numChannels;
 	var pushPullAlphaTask;
 	var pushPullAlpha= {|start, end, dur|
 		pushPullAlphaTask.stop;
@@ -58,12 +58,11 @@ s.waitForBoot{
 	var reorder;
 	var capCals= Array.newClear(numChannels);  //stores capacitive values for calibration
 	var form, sections= 0!numChannels;
-	var indexTime;  //for measuring how long cap4 been pressed
-	var indexLast= -1;  //for filtering out repetitions
 	var sectionsLast;
 	var imuSyn, mainSyn;
 	var synths= Array.newClear(numChannels), synthsLib;
 	var waveBuffers= {Buffer.alloc(s, bufferSize, 1)}!numChannels;
+	pushPulls.do{|x| x.put(\lastTime, Main.elapsedTime)};
 	~waveBusses= {Bus.audio(s, 2)}!numChannels;
 	~cxBus= Bus.control(s, numChannels);
 	~cyBus= Bus.control(s, numChannels);
@@ -97,7 +96,7 @@ s.waitForBoot{
 		var x= \x.kr(0!numChannels);
 		var y= \y.kr(0!numChannels)*\strengths.kr(1.0!numChannels);
 		var xx= x.lag2(lagx);
-		var yy= (HPF.kr(y, hp, 3).abs.lag2ud(15, 50)-0.02).clip(0, 1);  //was lag2ud(10, 40)
+		var yy= (HPF.kr(y, hp, 3).abs.lag2ud(10, 25)-0.02).clip(0, 1);
 		Out.kr(~cxBus, xx*ampx.lag(10)*(yy*2).clip(0, 1));
 		Out.kr(~cyBus, yy*ampy.lag(10));
 		Out.kr(~ampBus, (yy*2).tanh);  //amplitudes for all synths - scale here
@@ -109,13 +108,14 @@ s.waitForBoot{
 			var accRawVals= msg[4..6];
 			//[index, accRawVals].postln;  //debug
 			accx[index]= accRawVals[0];
-			imuSyn.set(\x, accx, \y, (0!numChannels).put(index, accRawVals[2]-0.9));
+			accy[index]= accRawVals[2]-0.9;
+			imuSyn.set(\x, accx, \y, accy);
 		}, '/imu', pushPulls[index].addr);
 	};
 	numChannels.do{|index|
 		reorder= if(pushPulls[index].isLeft, {#[1, 2, 3, 0, 4, 5]}, {#[0, 3, 2, 1, 4, 5]});
 		OSCdef(("caps"++index).asSymbol, {|msg|
-			var str= "", capRawVals;
+			var str= "", capRawVals, i;
 			msg[1].do{|c| str= str++c.asAscii};
 			capRawVals= str.split(Char.space).asInteger;
 			capRawVals= capRawVals[reorder];
@@ -124,12 +124,13 @@ s.waitForBoot{
 			}, {
 				i= (((capRawVals-capCals[index])/16383)>0.01).indexOf(true);
 				//[index, i].postln;  //debug
-				if(i!=indexLast, {
-					if(i==4 and:{indexLast!=4}, {
+				if(i!=pushPulls[index].capLast, {
+					if(i==4 and:{pushPulls[index].capLast!=4}, {
 						pushPulls[index].addr.sendMsg('/outputs/rgb/1', {#[0, 255, 0]}.dup(8).flat.as(Int8Array));  //all green
 					});
-					if(i.isNil and:{indexLast==4}, {
-						if(Main.elapsedTime-indexTime>2, {  //hold cap4 to switch sound
+					if(i.isNil and:{pushPulls[index].capLast==4}, {
+						if(Main.elapsedTime-pushPulls[index].lastTime>2, {  //hold cap4 to switch sound
+							("switching to "+index).postln;
 							sections.put(index, sections[index]+1);
 							form.value(index);
 							pushPulls[index].addr.sendMsg('/outputs/rgb/1', 255.dup(24).as(Int8Array));  //all white
@@ -140,8 +141,7 @@ s.waitForBoot{
 							pushPulls[index].addr.sendMsg('/outputs/rgb/1', Int8Array.newClear(24));  //all black
 						});
 					});
-					indexLast= i;
-					indexTime= Main.elapsedTime;
+					pushPulls[index].put(\capLast, i);
 				});
 			});
 		}, '/inputs/serial/1', pushPulls[index].addr);
@@ -235,4 +235,7 @@ n.sendMsg(\feedback, 1);
 n.sendMsg(\alpha, 10)
 n.sendMsg(\alpha, 100)
 n.sendMsg(\alpha, 255)
+
+m= NetAddr("127.0.0.1", 9000);  //testing
+m.sendMsg(\imu, -0.85365855693817, 0.42682927846909, 0.18292683362961, -0.09619140625, -0.00537109375, 0.94775390625, 0.26666668057442, 0.076923079788685, -0.52051281929016, 46.650001525879)
 */
