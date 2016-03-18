@@ -4,9 +4,9 @@ A piece for 3DMIN's PushPull instrument
 
 ## Background
 
-This interactive audiovisual composition was commissioned by [3DMIN](http://3dmin.org) and supported by the festival/conference [GLOBALE: Performing Sound, Playing Technology](http://zkm.de/event/2016/02/globale-performing-sound-playing-technology). It was premiered 2016-02-05 in Karlsruhe at the ZKM Kubus.
+This interactive audiovisual composition was commissioned by ZKM | Institute for Music and Acoustics for the festival/conference [GLOBALE: Performing Sound, Playing Technology](http://zkm.de/event/2016/02/globale-performing-sound-playing-technology). It was premiered 2016-02-05 in Karlsruhe at the ZKM Kubus.
 
-It was written for the [PushPull](http://www.3dmin.org/research/open-development-and-design/pushpull/) instrument and works a bit like a game where the performer(s) need to **pump up the sound** - and keep on pumping for the piece to develop. If played by a single person the performer has to select which sounds to keep breeding. When multiple people perform the piece they get to pump one sound channel each. All sounds and graphics are generated in realtime.
+It was written for [3DMIN](http://3dmin.org)'s [PushPull](http://www.3dmin.org/research/open-development-and-design/pushpull/) instrument and works a bit like a game where the performer(s) need to **pump up the sound** - and keep on pumping for the piece to develop. If played by a single person the performer has to select which sounds to keep breeding. When multiple people perform the piece they get to pump one sound channel each. All sounds and graphics are generated in realtime.
 
 ![biopump_screenshot.png](biopump_screenshot.png?raw=true "biopump_screenshot.png")
 
