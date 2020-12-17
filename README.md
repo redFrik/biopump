@@ -4,9 +4,9 @@ A piece for 3DMIN's PushPull instrument
 
 ## Background
 
-This interactive audiovisual composition was commissioned by ZKM | Institute for Music and Acoustics for the festival/conference [GLOBALE: Performing Sound, Playing Technology](http://zkm.de/event/2016/02/globale-performing-sound-playing-technology). It was premiered 2016-02-05 in Karlsruhe at the ZKM Kubus.
+This interactive audiovisual composition was commissioned by ZKM | Institute for Music and Acoustics for the festival/conference [GLOBALE: Performing Sound, Playing Technology](https://zkm.de/event/2016/02/globale-performing-sound-playing-technology). It was premiered 2016-02-05 in Karlsruhe at the ZKM Kubus.
 
-It was written for [3DMIN](http://3dmin.org)'s [PushPull](http://www.3dmin.org/research/open-development-and-design/pushpull/) instrument and works a bit like a game where the performer(s) need to **pump up the sound** - and keep on pumping for the piece to develop. If played by a single person the performer has to select which sounds to keep breeding. When multiple people perform the piece they get to pump one sound channel each. All sounds and graphics are generated in realtime.
+It was written for [3DMIN](https://3dmin.org)'s [PushPull](https://www.3dmin.org/research/open-development-and-design/pushpull/) instrument and works a bit like a game where the performer(s) need to **pump up the sound** - and keep on pumping for the piece to develop. If played by a single person the performer has to select which sounds to keep breeding. When multiple people perform the piece they get to pump one sound channel each. All sounds and graphics are generated in realtime.
 
 ![biopump_screenshot.png](biopump_screenshot.png?raw=true "biopump_screenshot.png")
 
@@ -16,12 +16,12 @@ It was written for [3DMIN](http://3dmin.org)'s [PushPull](http://www.3dmin.org/r
 * PushPull instrument with WiFi router
 * Stereo sound system (with subbass preferred)
 * Video projection (1080p resolution preferred)
-* [SuperCollider](http://supercollider.github.io) (v3.7 with no special extensions)
-* [Processing](http://processing.org) (v3 with the OscP5 library)
+* [SuperCollider](https://supercollider.github.io) (v3.7 with no special extensions)
+* [Processing](https://processing.org) (v3 with the OscP5 library)
 
 ## Installation & Startup
 
-* The Processing code needs the OscP5 library. Install it from inside Processing ifself: under menu *Add Tool...* search for *oscp5* among the libraries.
+* The Processing code needs the OscP5 library. Install it from inside Processing itself: under menu *Add Tool...* search for *oscp5* among the libraries.
 * On the laptop: turn off f.lux, screensaver, automatic graphics switching in OSX system preferences etc.
 * Set up the network, connect the laptop to the WiFi router and turn on the PushPull instrument.
 * Connect a video projector and sound to the laptop.
@@ -35,16 +35,16 @@ It was written for [3DMIN](http://3dmin.org)'s [PushPull](http://www.3dmin.org/r
 * Pump and jump between channels - find interesting sounds.
 * Go to next form section by holding capacitive sensor 4 for longer than 2 seconds.
 * There are seven form sections in total...
-  * silent - waiting for piece to start
+  * silent - waiting for the piece to start
   * sound fading in - start pumping to hear and see a sound - slowly
-  * sound changing on first channel
-  * sound changing on third channel - feedback in graphics slowly starting
-  * sound changing on first and second channel - more alpha and feedback graphics
-  * sound changing on third channel and first fading out - even more alpha
+  * sound changing on the first channel
+  * sound changing on the third channel - feedback in graphics slowly starting
+  * sound changing on the first and second channel - more alpha and feedback graphics
+  * sound changing on the third channel and first fading out - even more alpha
   * sound fading out to silence - piece ends.
 * Tilt the head of the PushPull instrument to move the selected line left and right.
 
-## Multi player
+## Multiplayer
 
 * The players control one channel (line) each.
 * Select new sound by holding capacitive sensor 4 for longer than 2 seconds.
@@ -57,7 +57,7 @@ It was written for [3DMIN](http://3dmin.org)'s [PushPull](http://www.3dmin.org/r
 
 ## Future ideas
 
-* Implement collision detection for lines (in Processing and send back data via osc).
+* Implement collision detection for lines (in Processing and send back data via OSC).
 * Tune strength using one of the knobs at the instrument base.
 
 ## License
